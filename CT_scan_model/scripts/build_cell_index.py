@@ -5,7 +5,7 @@ named "slices" at arbitrary depth, e.g.:
 
   BASE_PATH/.../<cell_format>/.../slices/<cell_id>/radial_images/*.png
 
-where <cell_format> contains one of: 18650 / 2170 / 4680.
+where <cell_format> contains one of: 18650 / 2170. (4680 is excluded.)
 
 It groups images by cell folder ("cell_id") and filters slices by relative depth
 in [min_rel_depth, max_rel_depth].
@@ -63,7 +63,8 @@ def build_index(
     cells: Dict[str, dict] = {}
 
     # We accept additional intermediate directory levels (e.g. manufacturer/voltage).
-    valid_formats = ("18650", "2170", "4680")
+    # 4680 is intentionally excluded so it is never indexed / trained on.
+    valid_formats = ("18650", "2170")
 
     for root, dirs, _files in os.walk(base_path):
         # Only consider directories that directly contain a "slices" directory.

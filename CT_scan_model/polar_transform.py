@@ -160,6 +160,7 @@ def cart_to_polar_boundary(
     N_r: int,
     N_theta: int,
     pad_value: float = -2.0,
+    interpolation: int = None,
 ) -> Tuple[np.ndarray, np.ndarray, float]:
     """Transform a normalised cartesian image to polar coordinates using the
     actual (non-circular) cell boundary.
@@ -175,6 +176,11 @@ def cart_to_polar_boundary(
     N_r : number of radial samples (height of output)
     N_theta : number of angular samples (width of output)
     pad_value : fill value for pixels outside the cell boundary
+    interpolation : cv2 interpolation flag; None -> cv2.INTER_LINEAR (default).
+        Pass ``cv2.INTER_NEAREST`` for LABEL/segmentation maps. Bilinear
+        interpolation averages neighbouring pixels, which is correct for
+        intensities but invents non-existent classes for labels (a pixel between
+        class 2 and 4 becomes 3, a real but wrong class).
 
     Returns
     -------
@@ -209,7 +215,7 @@ def cart_to_polar_boundary(
         image.astype(np.float32),
         map_x,
         map_y,
-        interpolation=cv2.INTER_LINEAR,
+        interpolation=(cv2.INTER_LINEAR if interpolation is None else int(interpolation)),
         borderMode=cv2.BORDER_CONSTANT,
         borderValue=float(pad_value),
     )
